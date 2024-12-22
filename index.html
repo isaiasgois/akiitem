@@ -1,111 +1,84 @@
+/* Estrutura do Banco de Dados (olx_clone.sql):
+
+CREATE DATABASE olx_clone;
+
+USE olx_clone;
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE ads (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    category_id INT NOT NULL,
+    title VARCHAR(100) NOT NULL,
+    description TEXT NOT NULL,
+    image VARCHAR(255),
+    price DECIMAL(10, 2),
+    location VARCHAR(100),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (category_id) REFERENCES categories(id)
+);
+*/
+
+// Arquivo: index.php
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Site Publicitário</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        header {
-            background-color: #333;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-        }
-        nav {
-            background-color: #444;
-            padding: 10px;
-            text-align: center;
-        }
-        nav a {
-            color: white;
-            margin: 0 15px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        nav a:hover {
-            text-decoration: underline;
-        }
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            padding: 20px;
-        }
-        .grid-item {
-            background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            overflow: hidden;
-            text-align: center;
-            padding: 10px;
-        }
-        .grid-item img {
-            width: 100%;
-            height: auto;
-        }
-        .video {
-            grid-column: span 3;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
-        .video-item {
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            overflow: hidden;
-            background-color: white;
-        }
-        .video-item video {
-            width: 100%;
-            height: auto;
-        }
-    </style>
+    <title>OLX Clone</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
-        <h1>Site Publicitário</h1>
+        <h1>OLX Clone</h1>
+        <nav>
+            <a href="register.php">Register</a>
+            <a href="login.php">Login</a>
+        </nav>
     </header>
-    <nav>
-        <a href="#">Cidade 1</a>
-        <a href="#">Cidade 2</a>
-        <a href="#">Cidade 3</a>
-    </nav>
-    <div class="grid-container">
-        <div class="grid-item"><img src="image1.jpg" alt="Imagem 1"></div>
-        <div class="grid-item"><img src="image2.jpg" alt="Imagem 2"></div>
-        <div class="grid-item"><img src="image3.jpg" alt="Imagem 3"></div>
-        <div class="grid-item"><img src="image4.jpg" alt="Imagem 4"></div>
-        <div class="grid-item"><img src="image5.jpg" alt="Imagem 5"></div>
-        <div class="grid-item"><img src="image6.jpg" alt="Imagem 6"></div>
-        <div class="video">
-            <div class="video-item">
-                <video controls>
-                    <source src="video1.mp4" type="video/mp4">
-                    Seu navegador não suporta vídeos.
-                </video>
-            </div>
-            <div class="video-item">
-                <video controls>
-                    <source src="video2.mp4" type="video/mp4">
-                    Seu navegador não suporta vídeos.
-                </video>
-            </div>
-            <div class="video-item">
-                <video controls>
-                    <source src="video3.mp4" type="video/mp4">
-                    Seu navegador não suporta vídeos.
-                </video>
-            </div>
+
+    <main>
+        <h2>Categories</h2>
+        <ul>
+            <li><a href="category.php?category=1">Comidas</a></li>
+            <li><a href="category.php?category=2">Serviços</a></li>
+            <li><a href="category.php?category=3">Produtos</a></li>
+        </ul>
+
+        <h2>Recent Ads</h2>
+        <div id="ads">
+            <?php
+            // Exemplo de listagem de anúncios do banco de dados
+            $conn = new mysqli("localhost", "root", "", "olx_clone");
+
+            $sql = "SELECT ads.title, ads.description, ads.price, categories.name AS category 
+                    FROM ads 
+                    JOIN categories ON ads.category_id = categories.id
+                    ORDER BY ads.id DESC LIMIT 5";
+
+            $result = $conn->query($sql);
+
+            while ($ad = $result->fetch_assoc()) {
+                echo "<div class='ad'>
+                    <h3>" . $ad['title'] . "</h3>
+                    <p>" . $ad['description'] . "</p>
+                    <p>Price: $" . $ad['price'] . "</p>
+                    <p>Category: " . $ad['category'] . "</p>
+                </div>";
+            }
+            ?>
         </div>
-        <div class="grid-item"><img src="image7.jpg" alt="Imagem 7"></div>
-        <div class="grid-item"><img src="image8.jpg" alt="Imagem 8"></div>
-        <div class="grid-item"><img src="image9.jpg" alt="Imagem 9"></div>
-    </div>
+    </main>
 </body>
 </html>
