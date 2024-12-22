@@ -1,84 +1,132 @@
-/* Estrutura do Banco de Dados (olx_clone.sql):
-
-CREATE DATABASE olx_clone;
-
-USE olx_clone;
-
-CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    password VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE categories (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL
-);
-
-CREATE TABLE ads (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    category_id INT NOT NULL,
-    title VARCHAR(100) NOT NULL,
-    description TEXT NOT NULL,
-    image VARCHAR(255),
-    price DECIMAL(10, 2),
-    location VARCHAR(100),
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (category_id) REFERENCES categories(id)
-);
-*/
-
-// Arquivo: index.php
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OLX Clone</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Espaço Publicitário</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+        nav {
+            background-color: #333;
+            overflow: hidden;
+        }
+        nav a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .container {
+            padding: 20px;
+        }
+        .categories, .ads {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .category, .ad {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            width: calc(33.333% - 20px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .category img, .ad img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
+        }
+        @media (max-width: 768px) {
+            .category, .ad {
+                width: calc(50% - 20px);
+            }
+        }
+        @media (max-width: 480px) {
+            .category, .ad {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
-        <h1>OLX Clone</h1>
-        <nav>
-            <a href="register.php">Register</a>
-            <a href="login.php">Login</a>
-        </nav>
+        <h1>Espaço Publicitário</h1>
     </header>
-
-    <main>
-        <h2>Categories</h2>
-        <ul>
-            <li><a href="category.php?category=1">Comidas</a></li>
-            <li><a href="category.php?category=2">Serviços</a></li>
-            <li><a href="category.php?category=3">Produtos</a></li>
-        </ul>
-
-        <h2>Recent Ads</h2>
-        <div id="ads">
-            <?php
-            // Exemplo de listagem de anúncios do banco de dados
-            $conn = new mysqli("localhost", "root", "", "olx_clone");
-
-            $sql = "SELECT ads.title, ads.description, ads.price, categories.name AS category 
-                    FROM ads 
-                    JOIN categories ON ads.category_id = categories.id
-                    ORDER BY ads.id DESC LIMIT 5";
-
-            $result = $conn->query($sql);
-
-            while ($ad = $result->fetch_assoc()) {
-                echo "<div class='ad'>
-                    <h3>" . $ad['title'] . "</h3>
-                    <p>" . $ad['description'] . "</p>
-                    <p>Price: $" . $ad['price'] . "</p>
-                    <p>Category: " . $ad['category'] . "</p>
-                </div>";
-            }
-            ?>
+    <nav>
+        <a href="#categories">Categorias</a>
+        <a href="#ads">Anúncios Recentes</a>
+        <a href="#contact">Contato</a>
+    </nav>
+    <div class="container">
+        <h2 id="categories">Categorias</h2>
+        <div class="categories">
+            <div class="category">
+                <img src="https://via.placeholder.com/300x150" alt="Comidas">
+                <h3>Comidas</h3>
+                <p>Descubra restaurantes, lanches, e mais!</p>
+            </div>
+            <div class="category">
+                <img src="https://via.placeholder.com/300x150" alt="Serviços">
+                <h3>Serviços</h3>
+                <p>Encontre profissionais e prestadores de serviço.</p>
+            </div>
+            <div class="category">
+                <img src="https://via.placeholder.com/300x150" alt="Produtos">
+                <h3>Produtos</h3>
+                <p>Compre e venda produtos de todos os tipos.</p>
+            </div>
         </div>
-    </main>
+
+        <h2 id="ads">Anúncios Recentes</h2>
+        <div class="ads">
+            <div class="ad">
+                <img src="https://via.placeholder.com/300x150" alt="Anúncio 1">
+                <h3>Restaurante Italiano</h3>
+                <p>Deliciosas massas e pizzas. Venha conferir!</p>
+                <p><strong>Preço:</strong> Sob consulta</p>
+            </div>
+            <div class="ad">
+                <img src="https://via.placeholder.com/300x150" alt="Anúncio 2">
+                <h3>Manutenção Residencial</h3>
+                <p>Serviços de elétrica e hidráulica.</p>
+                <p><strong>Preço:</strong> A partir de R$ 50</p>
+            </div>
+            <div class="ad">
+                <img src="https://via.placeholder.com/300x150" alt="Anúncio 3">
+                <h3>Smartphone Usado</h3>
+                <p>Celular em ótimo estado com acessórios.</p>
+                <p><strong>Preço:</strong> R$ 1.200</p>
+            </div>
+        </div>
+    </div>
+    <footer id="contact">
+        <p>&copy; 2024 Espaço Publicitário. Todos os direitos reservados.</p>
+    </footer>
 </body>
 </html>
